@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>   
+<meta charset="utf-8" />   
+<title>My Custom Fitbit Dashboard</title>
+<script src='static/chart.min.js'></script>   
+</head>
+
+<body>
+
+<h1>Weekly Calories</h1>
+<p>Weekly Difference so far: {{total_diff}}</p>
+<canvas id="weeklychart" height="400"></canvas>
+
+<h1>Daily Calories</h1>
+<p>Daily Difference so far: {{today_diff}}</p>
+<canvas id="dailychart" height="400"></canvas>
+
+<script>
+// Weekly Chart
+   var weeklyData = {
+   labels : [{% for item in total_labels %}
+                  "{{item}}",
+              {% endfor %}],
+   datasets : [
+      {
+            fillColor: "rgba(151,187,205,0.2)",
+            strokeColor: "rgba(151,187,205,1)",
+            pointColor: "rgba(151,187,205,1)",
+         data : [{% for item in total_values %}
+                      {{item}},
+                    {% endfor %}]
+      }
+      ]
+   }
+ 
+   // get weekly chart canvas
+   var weeklychart = document.getElementById("weeklychart").getContext("2d");
+ 
+   steps = 10
+   max = 20000
+   // draw bar chart
+   new Chart(weeklychart).Bar(weeklyData, {
+        scaleOverride: true,
+        scaleSteps: steps,
+        scaleStepWidth: Math.ceil(max / steps),
+        scaleStartValue: 0,
+        scaleShowVerticalLines: true,
+        scaleShowGridLines : true,
+        barShowStroke : true,
+        scaleShowLabels: true
+   });
+
+
+// Daily Chart
+   var dailyData = {
+   labels : [{% for item in today_labels %}
+                  "{{item}}",
+              {% endfor %}],
+   datasets : [
+      {
+            fillColor: "rgba(151,187,205,0.2)",
+            strokeColor: "rgba(151,187,205,1)",
+            pointColor: "rgba(151,187,205,1)",
+         data : [{% for item in today_values %}
+                      {{item}},
+                    {% endfor %}]
+      }
+      ]
+   }
+ 
+   // get weekly chart canvas
+   var dailychart = document.getElementById("dailychart").getContext("2d");
+ 
+   steps = 10
+   max = 20000
+   // draw bar chart
+   new Chart(dailychart).Bar(dailyData, {
+        scaleOverride: true,
+        scaleSteps: steps,
+        scaleStepWidth: Math.ceil(max / steps),
+        scaleStartValue: 0,
+        scaleShowVerticalLines: true,
+        scaleShowGridLines : true,
+        barShowStroke : true,
+        scaleShowLabels: true
+   });
+ 
+</script>
+</body></html>
