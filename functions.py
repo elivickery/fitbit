@@ -1,8 +1,3 @@
-def chart():
-    total_labels = ["Calories In","Calories Out"]
-    total_values = [total_calories_in,total_calories_out]
-    return render_template('chart.html', values=total_values, labels=total_labels)
-
 def calories_in():
 
     print "CALORIES CONSUMED"

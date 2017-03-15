@@ -1,15 +1,12 @@
-import fitbit, json
+import fitbit, json, time
 from datetime import date
-from flask import Flask
-from flask import Markup
-from flask import Flask
-from flask import render_template
+from flask import Flask, Markup, render_template
+
 app = Flask(__name__)
 
 today = date.today()
  
 @app.route("/")
-
 def chart():
     total_labels = ["Calories In This Week","Calories Out This Week"]
     total_values = [total_calories_in,total_calories_out]
@@ -63,40 +60,44 @@ except IOError:
 
     json.dump(token, open(tokenfile,'w'))
 
-# Get user profile info, calories in and calories out data from the past week
-userprofile = fitbitclass.ApiCall(token, '/1/user/-/profile.json')
-caloriesout = fitbitclass.ApiCall(token, '/1/user/-/activities/calories/date/today/1w.json')
-caloriesin = fitbitclass.ApiCall(token, '/1/user/-/foods/log/caloriesIn/date/today/1w.json')
 
-# Replace the current token with the response one and save it in user_settings.txt.
-token = userprofile['token']
-json.dump(token, open(tokenfile,'w'))
+while True:
+    # Get user profile info, calories in and calories out data from the past week
+    userprofile = fitbitclass.ApiCall(token, '/1/user/-/profile.json')
+    caloriesout = fitbitclass.ApiCall(token, '/1/user/-/activities/calories/date/today/1w.json')
+    caloriesin = fitbitclass.ApiCall(token, '/1/user/-/foods/log/caloriesIn/date/today/1w.json')
 
-calories_out_today = int(caloriesout['activities-calories'][-1]['value'])
-calories_in_today = int(caloriesin['foods-log-caloriesIn'][-1]['value'])
+    # Replace the current token with the response one and save it in user_settings.txt.
+    token = userprofile['token']
+    json.dump(token, open(tokenfile,'w'))
 
-total_calories_in = calories_in()
-total_calories_out = calories_out()
+    calories_out_today = int(caloriesout['activities-calories'][-1]['value'])
+    calories_in_today = int(caloriesin['foods-log-caloriesIn'][-1]['value'])
 
-print '-----------------------'
+    total_calories_in = calories_in()
+    total_calories_out = calories_out()
 
-print "Welcome, %s!" % userprofile['user']['displayName']
+    print '-----------------------'
 
-print "Today is: %s." % today
+    print "Welcome, %s!" % userprofile['user']['displayName']
 
-print "Calories consumed so far today: %s" % calories_in_today
-print "Calories burned so far today: %s" % calories_out_today
+    print "Today is: %s." % today
 
-print '-----------------------'
+    print "Calories consumed so far today: %s" % calories_in_today
+    print "Calories burned so far today: %s" % calories_out_today
 
-print 'Calories consumed this week: %s' % total_calories_in
+    print '-----------------------'
 
-print '-----------------------'
+    print 'Calories consumed this week: %s' % total_calories_in
 
-print 'Calories burned this week: %s' % total_calories_out
+    print '-----------------------'
+
+    print 'Calories burned this week: %s' % total_calories_out
+
+    time.sleep(120)
 
 
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5001)
+    app.run(host='0.0.0.0', port=5001,debug=True)
