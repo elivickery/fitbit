@@ -5,20 +5,47 @@ from flask import Flask, Markup, render_template
 app = Flask(__name__)
 
 today = date.today()
- 
+
+today_formatted = today.strftime('%b %d, %Y')
+
+weekday = (today.weekday()) + 1
+
 @app.route("/")
 def chart():
-    total_labels = ["Calories In This Week","Calories Out This Week"]
+    total_labels = ["In","Out"]
     total_values = [total_calories_in,total_calories_out]
     total_diff = (total_calories_in - total_calories_out)
-    today_labels = ["Calories In Today","Calories Out Today"]
+    total_weight_loss_est = abs(((total_diff / weekday) * 7) / 3500.0)
+
+    if(total_diff < 0):
+        in_weekly_deficit = True
+    else:
+        in_weekly_deficit = False
+
+    today_labels = ["In","Out"]
     today_values = [calories_in_today,calories_out_today]
     today_diff = (calories_in_today - calories_out_today)
-    return render_template('chart.html', total_values=total_values, total_labels=total_labels,today_values=today_values,today_labels=today_labels,total_diff=total_diff,today_diff=today_diff)
+
+    if(today_diff < 0):
+        in_daily_deficit = True
+    else:
+         in_daily_deficit = False
+
+    return render_template('chart.html',
+                total_values = total_values,
+                total_labels = total_labels,
+                today_values = today_values,
+                today_labels = today_labels,
+                total_diff = total_diff,
+                today_diff = today_diff,
+                username = username,
+                today = today_formatted,
+                weekday = weekday,
+                in_weekly_deficit = in_weekly_deficit,
+                in_daily_deficit = in_daily_deficit,
+                total_weight_loss_est = total_weight_loss_est)
 
 def calories_in():
-
-    print "CALORIES CONSUMED"
 
     total_calories_in = 0
 
@@ -32,8 +59,6 @@ def calories_in():
 
 def calories_out():
 
-    print "CALORIES BURNED"
-
     total_calories_out = 0
 
     for calories_out_item in caloriesout['activities-calories']:
@@ -42,6 +67,8 @@ def calories_out():
         total_calories_out += int(calories_out)
 
     return total_calories_out
+
+
 
 tokenfile = "user_settings.txt"
 
@@ -62,7 +89,7 @@ except IOError:
 
 
 while True:
-    # Get user profile info, calories in and calories out data from the past week
+    # Get user profile info, calories in and calories out json data from the past week.
     userprofile = fitbitclass.ApiCall(token, '/1/user/-/profile.json')
     caloriesout = fitbitclass.ApiCall(token, '/1/user/-/activities/calories/date/today/1w.json')
     caloriesin = fitbitclass.ApiCall(token, '/1/user/-/foods/log/caloriesIn/date/today/1w.json')
@@ -77,27 +104,11 @@ while True:
     total_calories_in = calories_in()
     total_calories_out = calories_out()
 
-    print '-----------------------'
-
-    print "Welcome, %s!" % userprofile['user']['displayName']
-
-    print "Today is: %s." % today
-
-    print "Calories consumed so far today: %s" % calories_in_today
-    print "Calories burned so far today: %s" % calories_out_today
-
-    print '-----------------------'
-
-    print 'Calories consumed this week: %s' % total_calories_in
-
-    print '-----------------------'
-
-    print 'Calories burned this week: %s' % total_calories_out
-
-    time.sleep(120)
 
 
+    username = userprofile['user']['displayName']
 
+    if __name__ == "__main__":
+        app.run(host='localhost', port=5001,debug=True)
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5001,debug=True)
+    time.sleep(60)

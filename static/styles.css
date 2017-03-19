@@ -1,0 +1,60 @@
+body {
+    background-color: #2f3f43;
+    font-family: 'Montserrat', sans-serif;
+    color: #fff;
+}
+
+h1, h2, p {
+    display:block;
+    margin-left:2%;
+}
+
+.container {
+    background:#fff;
+    border-radius:4px;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    padding:0 2%;
+}
+
+.container h1, .container h2, .container p {
+    color: #2f3f43;
+    margin-left:0;
+}
+
+.container canvas {
+    margin-top:1%;
+    max-width:400px;
+    max-height:400px;
+}
+
+.container p span {
+    color:#CD0000;
+    font-weight:bold;
+}
+
+.container p span.deficit {
+    color:#228B22;
+}
+
+.left, .right {
+    width:44%;
+}
+
+.left {
+    float:left;
+    margin-left:1%;
+}
+
+.right {
+    float:right;
+    margin-right:1%;
+}
+
+@media (max-width:900px) {
+
+    .left, .right {
+        width:98%;
+        margin: 1%;
+    }
+}

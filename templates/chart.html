@@ -1,21 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>   
-<meta charset="utf-8" />   
-<title>My Custom Fitbit Dashboard</title>
-<script src='static/chart.min.js'></script>   
+<head>
+<meta charset="utf-8" />
+<title>{{username}}'s Fitbit Summary Dashboard</title>
+<script src='static/chart.min.js'></script>
+<link href="static/styles.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500" rel="stylesheet"/>
 </head>
 
 <body>
 
-<h1>Weekly Calories</h1>
-<p>Weekly Difference so far: {{total_diff}}</p>
-<canvas id="weeklychart" height="400"></canvas>
+<h1>Fitbit Summary Dashboard</h1>
+<h2>Welcome, {{username}}!&nbsp;&nbsp;&nbsp;Today is {{today}}.</h2>
 
-<h1>Daily Calories</h1>
-<p>Daily Difference so far: {{today_diff}}</p>
-<canvas id="dailychart" height="400"></canvas>
+<div class="container left">
+  <h1>Weekly Calories</h1>
+
+  <p>Weekly Difference so far:
+    <span {% if in_weekly_deficit %}class="deficit"{% endif %}>
+      {% if in_weekly_deficit == False %}+{% endif %}
+      {{total_diff}}
+    </span>
+  </p>
+
+  <div class="prediction">
+    {% if in_weekly_deficit %}
+      <p><b>At this rate, you'll lose {{ total_weight_loss_est }} pounds this week.</b></p>
+    {% endif %}
+  </div>
+
+  <canvas id="weeklychart" height="400"></canvas>
+</div>
+
+<div class="container right">
+  <h1>Daily Calories</h1>
+  <p>Daily Difference so far:
+    <span {% if in_daily_deficit %}class="deficit"{% endif %}>
+      {% if in_daily_deficit == False %}+{% endif %}
+      {{today_diff}}
+    </span>
+  </p>
+  <p>You're doing great!</p>
+  <canvas id="dailychart" height="400"></canvas>
+</div>
 
 <script>
 // Weekly Chart
@@ -25,7 +53,7 @@
               {% endfor %}],
    datasets : [
       {
-            fillColor: "rgba(151,187,205,0.2)",
+            fillColor: "rgba(151,187,205,0.8)",
             strokeColor: "rgba(151,187,205,1)",
             pointColor: "rgba(151,187,205,1)",
          data : [{% for item in total_values %}
@@ -34,14 +62,16 @@
       }
       ]
    }
- 
+
    // get weekly chart canvas
    var weeklychart = document.getElementById("weeklychart").getContext("2d");
- 
+
    steps = 10
    max = 20000
    // draw bar chart
    new Chart(weeklychart).Bar(weeklyData, {
+        responsive: true,
+        maintainAspectRatio: true,
         scaleOverride: true,
         scaleSteps: steps,
         scaleStepWidth: Math.ceil(max / steps),
@@ -60,23 +90,25 @@
               {% endfor %}],
    datasets : [
       {
-            fillColor: "rgba(151,187,205,0.2)",
-            strokeColor: "rgba(151,187,205,1)",
-            pointColor: "rgba(151,187,205,1)",
+            fillColor: "rgba(148,0,211,.35)",
+            strokeColor: "rgba(148,0,211,.35)",
+            pointColor: "rgba(148,0,211,.35)",
          data : [{% for item in today_values %}
                       {{item}},
                     {% endfor %}]
       }
       ]
    }
- 
+
    // get weekly chart canvas
    var dailychart = document.getElementById("dailychart").getContext("2d");
- 
+
    steps = 10
    max = 3000
    // draw bar chart
    new Chart(dailychart).Bar(dailyData, {
+        responsive: true,
+        maintainAspectRatio: true,
         scaleOverride: true,
         scaleSteps: steps,
         scaleStepWidth: Math.ceil(max / steps),
@@ -86,6 +118,6 @@
         barShowStroke : true,
         scaleShowLabels: true
    });
- 
+
 </script>
 </body></html>
