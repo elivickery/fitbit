@@ -8,14 +8,12 @@ today = date.today()
 
 today_formatted = today.strftime('%b %d, %Y')
 
-weekday = (today.weekday()) + 1
-
 @app.route("/")
 def chart():
     total_labels = ["In","Out"]
     total_values = [total_calories_in,total_calories_out]
     total_diff = (total_calories_in - total_calories_out)
-    total_weight_loss_est = round(abs((total_diff / weekday) / 3500.0),2)
+    total_weight_loss_est = round(abs(total_diff / 3500.0),2)
 
     if(total_diff < 0):
         in_weekly_deficit = True
