@@ -15,7 +15,7 @@ def chart():
     total_labels = ["In","Out"]
     total_values = [total_calories_in,total_calories_out]
     total_diff = (total_calories_in - total_calories_out)
-    total_weight_loss_est = abs(((total_diff / weekday) * 7) / 3500.0)
+    total_weight_loss_est = round(abs((total_diff / weekday) / 3500.0),2)
 
     if(total_diff < 0):
         in_weekly_deficit = True
