@@ -38,7 +38,6 @@ def chart():
                 today_diff = today_diff,
                 username = username,
                 today = today_formatted,
-                weekday = weekday,
                 in_weekly_deficit = in_weekly_deficit,
                 in_daily_deficit = in_daily_deficit,
                 total_weight_loss_est = total_weight_loss_est)
@@ -49,7 +48,6 @@ def calories_in():
 
     for calories_in_item in caloriesin['foods-log-caloriesIn']:
         calories_in = calories_in_item['value']
-        print "%s - %s" % (calories_in_item['dateTime'],calories_in)
         total_calories_in += int(calories_in)
 
     return total_calories_in
@@ -61,7 +59,6 @@ def calories_out():
 
     for calories_out_item in caloriesout['activities-calories']:
         calories_out = calories_out_item['value']
-        print "%s - %s" % (calories_out_item['dateTime'],calories_out)
         total_calories_out += int(calories_out)
 
     return total_calories_out
@@ -74,7 +71,7 @@ fitbitclass = fitbit.Fitbit();
 
 try:
     token = json.load(open(tokenfile))
-except IOError:
+except:
     auth_url = fitbitclass.GetAuthorizationUri()
 
     print "Please visit the link below and approve the app:\n %s" % auth_url
